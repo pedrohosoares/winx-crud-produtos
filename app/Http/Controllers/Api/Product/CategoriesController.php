@@ -8,6 +8,7 @@ use App\Http\Requests\Category\ShowCategoryRequest;
 use App\Http\Requests\Category\StoreCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
 use App\Http\Requests\Product\ExistProductRequest;
+use App\Http\Resources\Product\CategoryResource;
 use App\Models\Product\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -27,7 +28,7 @@ class CategoriesController extends Controller
      */
     public function index(Request $request)
     {
-        dd($request->all());
+        return CategoryResource::collection(Category::paginate(25));
     }
 
     /**
