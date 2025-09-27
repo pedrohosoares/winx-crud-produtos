@@ -27,21 +27,21 @@ class UpdateCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "id"=>"required|exists:categories,id|numeric",
-            "name"=>"required|string|min:3,max:80"
+            "id" => "required|exists:categories,id|numeric",
+            "name" => "required|string|min:3,max:80"
         ];
     }
 
     public function messages(): array
     {
         return [
-            "id.required"=>"O ID precisa ser válido",
-            "id.exists"=>"A categoria não existe",
-            "id.numeric"=>"O ID precisa estar em caracteres válidos",
-            "name.required"=>"O nome da categoria é obrigatório",
-            "name.string"=>"O nome precisa ser uma palavra",
-            "name.min"=>"Você precisa informar pelo menos 3 digitos no nome",
-            "name.max"=>"Você precisa informar no máximo 80 digitos no nome"
+            "id.required" => "O ID precisa ser válido",
+            "id.exists" => "A categoria não existe",
+            "id.numeric" => "O ID precisa estar em caracteres válidos",
+            "name.required" => "O nome da categoria é obrigatório",
+            "name.string" => "O nome precisa ser uma palavra",
+            "name.min" => "Você precisa informar pelo menos 3 digitos no nome",
+            "name.max" => "Você precisa informar no máximo 80 digitos no nome"
         ];
     }
 }

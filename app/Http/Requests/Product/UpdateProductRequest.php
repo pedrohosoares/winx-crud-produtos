@@ -4,14 +4,19 @@ namespace App\Http\Requests\Product;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreProductRequest extends BaseProductRequest
+class UpdateProductRequest extends BaseProductRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge(['id' => $this->route('product')]);
     }
 
     /**
@@ -22,12 +27,15 @@ class StoreProductRequest extends BaseProductRequest
     public function rules(): array
     {
         $rules = $this->baseRules();
+        $rules['id'] = 'required|exists:products,id';
         return $rules;
     }
 
     public function messages(): array
     {
         $message = $this->baseMessages();
+        $message['id.required'] = 'O ID do produto é necessário';
+        $message['id.exists'] = 'O produto não foi encontrado';
         return $message;
     }
 }

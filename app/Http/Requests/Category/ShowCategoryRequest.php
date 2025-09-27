@@ -27,16 +27,16 @@ class ShowCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id'=>'required|numeric|exists:categories,id'
+            'id' => 'required|numeric|exists:categories,id'
         ];
     }
 
     public function message(): array
     {
         return [
-            'id.required'=>'Informe o ID da categoria',
-            'id.numeric'=>'Informe um ID válido',
-            'id.exists'=>'Categoria não encontrada'
+            'id.required' => 'Informe o ID da categoria',
+            'id.numeric' => 'Informe um ID válido',
+            'id.exists' => 'Categoria não encontrada'
         ];
     }
 }

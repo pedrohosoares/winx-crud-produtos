@@ -22,18 +22,18 @@ class StoreCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name"=>"required|string|unique:categories,name|min:3,max:80"
+            "name" => "required|string|unique:categories,name|min:3,max:80"
         ];
     }
 
     public function messages(): array
     {
         return [
-            "name.required"=>"O nome da categoria é obrigatório",
-            "name.string"=>"O nome precisa ser uma palavra",
-            "name.unique"=>"A categoria já esta cadastrada",
-            "name.min"=>"Você precisa informar pelo menos 3 digitos no nome",
-            "name.max"=>"Você precisa informar no máximo 80 digitos no nome"
+            "name.required" => "O nome da categoria é obrigatório",
+            "name.string" => "O nome precisa ser uma palavra",
+            "name.unique" => "A categoria já esta cadastrada",
+            "name.min" => "Você precisa informar pelo menos 3 digitos no nome",
+            "name.max" => "Você precisa informar no máximo 80 digitos no nome"
         ];
     }
 }

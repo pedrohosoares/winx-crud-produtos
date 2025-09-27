@@ -72,7 +72,13 @@ class ProductsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            $this->service->update($request->id,$request->validated());
+            return $this->successResponse('Categoria atualizada com sucesso!',[],Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            report($th);
+            return $this->errorResponse('Erro ao atualizar categoria',['message'=>$th->getMessage()],Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**

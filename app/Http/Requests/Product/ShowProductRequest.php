@@ -22,16 +22,16 @@ class ShowProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id'=>'required|numeric|exists:products,id'
+            'id' => 'required|numeric|exists:products,id'
         ];
     }
 
     public function message(): array
     {
         return [
-            'id.required'=>'Informe o ID do produto',
-            'id.numeric'=>'Informe um ID válido',
-            'id.exists'=>'Produto não encontrado'
+            'id.required' => 'Informe o ID do produto',
+            'id.numeric' => 'Informe um ID válido',
+            'id.exists' => 'Produto não encontrado'
         ];
     }
 }
