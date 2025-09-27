@@ -7,14 +7,16 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Category\ShowCategoryRequest;
 use App\Http\Requests\Category\StoreCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
-use App\Http\Requests\Product\ExistProductRequest;
 use App\Http\Resources\Product\CategoryResource;
 use App\Models\Product\Category;
+use App\Traits\ApiResponseTraits;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class CategoriesController extends Controller
 {
+
+    use ApiResponseTraits;
 
     protected $service;
 
@@ -39,11 +41,11 @@ class CategoriesController extends Controller
         $data = $request->all();
         try {
             $success = DB::transaction(function() use ($data){
-                Category::create($data);
-                return true;
+                return Category::create($data);
             });
+            $this->successResponse('Categoria criada com sucesso!',$success);
         } catch (\Throwable $th) {
-            //throw $th;
+            return $this->errorResponse($th->getMessage(),[]);
         }
     }
 
@@ -56,7 +58,7 @@ class CategoriesController extends Controller
         try {
             return Category::find($id);
         } catch (\Throwable $th) {
-            //throw $th;
+            return $this->errorResponse($th->getMessage(),[]);
         }
     }
 
@@ -67,14 +69,15 @@ class CategoriesController extends Controller
     {
         try {
             $data = $request->all();
-            $db = DB::transaction(function() use ($data){
+            $success = DB::transaction(function() use ($data){
                 $category = Category::find($data['id']);
                 $category->name = $data['name'];
                 $category->save();
-                return true;
+                return $category;
             });   
+            $this->successResponse('Categoria atualizada com sucesso!',$success);
         } catch (\Throwable $th) {
-            //throw $th;
+            return $this->errorResponse($th->getMessage(),[]);
         }
     }
 
@@ -85,9 +88,12 @@ class CategoriesController extends Controller
     {
         $id = $request->id;
         try {
-            return Category::destroy($id);
+            $success = Category::destroy($id);
+            if($success){
+                $this->successResponse('Categoria excluída com sucesso!',[]);
+            }
         } catch (\Throwable $th) {
-            //throw $th;
+            return $this->errorResponse($th->getMessage(),[]);
         }
     }
 }
