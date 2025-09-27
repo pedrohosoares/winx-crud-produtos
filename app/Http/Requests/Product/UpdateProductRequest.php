@@ -27,7 +27,7 @@ class UpdateProductRequest extends BaseProductRequest
     public function rules(): array
     {
         $rules = $this->baseRules();
-        $rules['id'] = 'required|exists:products,id';
+        $rules['id'] = 'required|numeric|exists:products,id';
         return $rules;
     }
 
@@ -36,6 +36,7 @@ class UpdateProductRequest extends BaseProductRequest
         $message = $this->baseMessages();
         $message['id.required'] = 'O ID do produto é necessário';
         $message['id.exists'] = 'O produto não foi encontrado';
+        $message['id.numeric'] = 'O ID precisa possuir caracteres válidos';
         return $message;
     }
 }
