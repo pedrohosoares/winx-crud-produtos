@@ -14,6 +14,11 @@ class ShowProductRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $this->merge(['id' => $this->route('product')]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *

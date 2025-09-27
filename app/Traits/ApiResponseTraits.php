@@ -2,10 +2,11 @@
 namespace App\Traits;
 
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 trait ApiResponseTraits
 {
-    protected function successResponse(string $message,array $data, int $status = 200): JsonResponse
+    protected function successResponse(string $message,array $data, int $status = Response::HTTP_OK): JsonResponse
     {
         return response()->json(
             [
@@ -17,7 +18,7 @@ trait ApiResponseTraits
         );
     }
 
-    protected function errorResponse(string $message,array $data, int $status = 400): JsonResponse
+    protected function errorResponse(string $message,array $data, int $status = Response::HTTP_INTERNAL_SERVER_ERROR): JsonResponse
     {
         return response()->json(
             [
