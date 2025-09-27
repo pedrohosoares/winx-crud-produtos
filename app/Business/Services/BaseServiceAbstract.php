@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Business\Services;
 
 use App\Business\Repositories\Contracts\BaseRepositoryInterface;
@@ -7,11 +8,11 @@ use Illuminate\Support\Facades\DB;
 
 abstract class BaseServiceAbstract implements BaseServiceInterface
 {
-    
+
     protected $repository;
 
-    public function __construct(BaseRepositoryInterface $repository) 
-    {    
+    public function __construct(BaseRepositoryInterface $repository)
+    {
         $this->repository = $repository;
     }
 
@@ -32,17 +33,22 @@ abstract class BaseServiceAbstract implements BaseServiceInterface
 
     public function create(array $data): object
     {
-        return DB::transaction(fn () => $this->repository->create($this->beforeCreate($data)));
+        return DB::transaction(function () use ($data) {
+            return $this->repository->create($data);
+        });
     }
 
     public function update(int $id, array $data): bool
     {
-        return DB::transaction(fn () => $this->repository->update($id, $this->beforeUpdate($data)));
+        return DB::transaction(function() use ($id,$data){
+            return $this->repository->update($id,$data);
+        }); 
     }
 
     public function delete(int $id): bool
     {
-        return DB::transaction(fn () => $this->repository->delete($id));
+        return DB::transaction(function() use($id){
+            return $this->repository->delete($id);
+        });
     }
-
 }

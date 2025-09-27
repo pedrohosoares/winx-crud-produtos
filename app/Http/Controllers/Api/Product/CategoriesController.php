@@ -10,8 +10,11 @@ use App\Http\Requests\Category\UpdateCategoryRequest;
 use App\Http\Resources\Product\CategoryResource;
 use App\Models\Product\Category;
 use App\Traits\ApiResponseTraits;
+use DomainException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\Response;
 
 class CategoriesController extends Controller
 {
@@ -20,64 +23,69 @@ class CategoriesController extends Controller
 
     protected $service;
 
-    public function __construct(CategoryService $product)
+    public function __construct(CategoryService $category)
     {
-        $this->service = $product;
+        $this->service = $category;
     }
     
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
-        return CategoryResource::collection(Category::paginate(25));
+        try {
+            return CategoryResource::collection($this->service->paginate())
+            ->response()
+            ->setStatusCode(Response::HTTP_OK);   
+        } catch (\Throwable $th) {
+            report($th);
+            return $this->errorResponse('Dados indisponíveis no momento',['message'=>$th->getMessage()],Response::HTTP_BAD_GATEWAY);
+        }
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCategoryRequest $request)
+    public function store(StoreCategoryRequest $request): JsonResponse
     {
-        $data = $request->all();
         try {
-            $success = DB::transaction(function() use ($data){
-                return Category::create($data);
-            });
-            $this->successResponse('Categoria criada com sucesso!',$success);
+            $category = $this->service->create($request->validated());
+            return (new CategoryResource($category))
+                ->response()
+                ->setStatusCode(Response::HTTP_CREATED);
         } catch (\Throwable $th) {
-            return $this->errorResponse($th->getMessage(),[]);
+            report($th);
+            return $this->errorResponse('Erro ao cadastrar a categoria',['message'=>$th->getMessage()],Response::HTTP_BAD_GATEWAY);
         }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(ShowCategoryRequest $request)
+    public function show(ShowCategoryRequest $request): JsonResponse
     {   
-        $id = $request->input('id');
         try {
-            return Category::find($id);
+            $category = $this->service->get($request->id);
+            return (new CategoryResource($category))
+                ->response()
+                ->setStatusCode(Response::HTTP_OK);
         } catch (\Throwable $th) {
-            return $this->errorResponse($th->getMessage(),[]);
+            report($th);
+            return $this->errorResponse('Erro ao atualizar categoria',['message'=>$th->getMessage()],Response::HTTP_BAD_GATEWAY);
         }
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCategoryRequest $request)
+    public function update(UpdateCategoryRequest $request): JsonResponse
     {
         try {
-            $data = $request->all();
-            $success = DB::transaction(function() use ($data){
-                $category = Category::find($data['id']);
-                $category->name = $data['name'];
-                $category->save();
-                return $category;
-            });   
-            $this->successResponse('Categoria atualizada com sucesso!',$success);
+            $this->service->update($request->id,$request->validated());
+            return $this->successResponse('Categoria atualizada com sucesso!',[],Response::HTTP_OK);
         } catch (\Throwable $th) {
-            return $this->errorResponse($th->getMessage(),[]);
+            report($th);
+            return $this->errorResponse('Erro ao atualizar categoria',['message'=>$th->getMessage()],Response::HTTP_BAD_GATEWAY);
         }
     }
 
@@ -86,14 +94,12 @@ class CategoriesController extends Controller
      */
     public function destroy(ShowCategoryRequest $request)
     {
-        $id = $request->id;
         try {
-            $success = Category::destroy($id);
-            if($success){
-                $this->successResponse('Categoria excluída com sucesso!',[]);
-            }
+            $this->service->delete($request->id);
+            $this->successResponse('Categoria excluída com sucesso!',[],Response::HTTP_OK);
         } catch (\Throwable $th) {
-            return $this->errorResponse($th->getMessage(),[]);
+            report($th);
+            return $this->errorResponse($th->getMessage(),[],Response::HTTP_BAD_GATEWAY);
         }
     }
 }
