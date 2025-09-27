@@ -75,10 +75,10 @@ class CategoriesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCategoryRequest $request): JsonResponse
+    public function update(UpdateCategoryRequest $request,int $id): JsonResponse
     {
         try {
-            $this->service->update($request->id,$request->validated());
+            $this->service->update($id,$request->validated());
             return $this->successResponse('Categoria atualizada com sucesso!',[],Response::HTTP_OK);
         } catch (\Throwable $th) {
             report($th);

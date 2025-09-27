@@ -71,10 +71,10 @@ class ProductsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProductRequest $request, string $id)
+    public function update(UpdateProductRequest $request, int $id)
     {
         try {
-            $this->service->update($request->id,$request->validated());
+            $this->service->update($id,$request->validated());
             return $this->successResponse('Produto atualizado com sucesso!',[],Response::HTTP_OK);
         } catch (\Throwable $th) {
             report($th);
