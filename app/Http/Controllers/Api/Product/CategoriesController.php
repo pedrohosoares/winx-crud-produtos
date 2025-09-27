@@ -8,12 +8,9 @@ use App\Http\Requests\Category\ShowCategoryRequest;
 use App\Http\Requests\Category\StoreCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
 use App\Http\Resources\Product\CategoryResource;
-use App\Models\Product\Category;
 use App\Traits\ApiResponseTraits;
-use DomainException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class CategoriesController extends Controller
@@ -39,7 +36,7 @@ class CategoriesController extends Controller
             ->setStatusCode(Response::HTTP_OK);   
         } catch (\Throwable $th) {
             report($th);
-            return $this->errorResponse('Dados indisponíveis no momento',['message'=>$th->getMessage()],Response::HTTP_BAD_GATEWAY);
+            return $this->errorResponse('Dados indisponíveis no momento',['message'=>$th->getMessage()],Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -55,7 +52,7 @@ class CategoriesController extends Controller
                 ->setStatusCode(Response::HTTP_CREATED);
         } catch (\Throwable $th) {
             report($th);
-            return $this->errorResponse('Erro ao cadastrar a categoria',['message'=>$th->getMessage()],Response::HTTP_BAD_GATEWAY);
+            return $this->errorResponse('Erro ao cadastrar a categoria',['message'=>$th->getMessage()],Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -71,7 +68,7 @@ class CategoriesController extends Controller
                 ->setStatusCode(Response::HTTP_OK);
         } catch (\Throwable $th) {
             report($th);
-            return $this->errorResponse('Erro ao atualizar categoria',['message'=>$th->getMessage()],Response::HTTP_BAD_GATEWAY);
+            return $this->errorResponse('Erro ao exibir categoria',['message'=>$th->getMessage()],Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -85,7 +82,7 @@ class CategoriesController extends Controller
             return $this->successResponse('Categoria atualizada com sucesso!',[],Response::HTTP_OK);
         } catch (\Throwable $th) {
             report($th);
-            return $this->errorResponse('Erro ao atualizar categoria',['message'=>$th->getMessage()],Response::HTTP_BAD_GATEWAY);
+            return $this->errorResponse('Erro ao atualizar categoria',['message'=>$th->getMessage()],Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -96,10 +93,10 @@ class CategoriesController extends Controller
     {
         try {
             $this->service->delete($request->id);
-            $this->successResponse('Categoria excluída com sucesso!',[],Response::HTTP_OK);
+            return $this->successResponse('Categoria excluída com sucesso!',[],Response::HTTP_OK);
         } catch (\Throwable $th) {
             report($th);
-            return $this->errorResponse($th->getMessage(),[],Response::HTTP_BAD_GATEWAY);
+            return $this->errorResponse($th->getMessage(),[],Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

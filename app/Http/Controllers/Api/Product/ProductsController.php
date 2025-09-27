@@ -4,16 +4,20 @@ namespace App\Http\Controllers\Api\Product;
 
 use App\Business\Services\Product\ProductService;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Product\ExistProductRequest;
+use App\Http\Requests\Product\ShowProductRequest;
 use App\Http\Requests\Product\SearchProductRequest;
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Resources\Product\ProductResource;
 use App\Models\Product\Product;
+use App\Traits\ApiResponseTraits;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\Response;
 
 class ProductsController extends Controller
 {
+
+    use ApiResponseTraits;
 
     protected $service;
 
@@ -35,24 +39,32 @@ class ProductsController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        $data = $request->all();
-        $meta = $data['meta'];
-        unset($data['meta']);
-        
-        DB::transaction(function() use ($data,$meta){
-            $product = new Product();
-            $product->fill($data);
-            $product->save();
-            dd($product);
-        });
+        try {
+            $product = $this->service->create($request->validated());
+            return (new ProductResource($product))
+            ->response()
+            ->setStatusCode(Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            report($th);
+            return $this->errorResponse('Falha ao cadastrar o produto',['message'=>$th->getMessage()],Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(ExistProductRequest $request)
+    public function show(ShowProductRequest $request)
     {
-        //
+        dd();
+        try {
+            $product = $this->service->get($request->id);
+            return (new ProductResource($product))
+                ->response()
+                ->setStatusCode(Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            report($th);
+            return $this->errorResponse('Erro ao exibir Produto',['message'=>$th->getMessage()],Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -66,7 +78,7 @@ class ProductsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ExistProductRequest $request)
+    public function destroy(ShowProductRequest $request)
     {
         //
     }
