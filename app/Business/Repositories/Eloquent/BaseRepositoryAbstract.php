@@ -14,8 +14,9 @@ abstract class BaseRepositoryAbstract implements BaseRepositoryInterface
         $this->model = $model;
     }
 
-    public function paginate(int $limit = 20)
+    public function paginate(array $query): object
     {
+        $limit = $query['limit'] ?? 25;
         return $this->model->paginate($limit);
     }
 

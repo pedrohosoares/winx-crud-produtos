@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Product;
 
 use App\Business\Services\Category\CategoryService;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Category\SearchCategoryRequest;
 use App\Http\Requests\Category\ShowCategoryRequest;
 use App\Http\Requests\Category\StoreCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
@@ -28,10 +29,11 @@ class CategoriesController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): JsonResponse
+    public function index(SearchCategoryRequest $request): JsonResponse
     {
         try {
-            return CategoryResource::collection($this->service->paginate())
+            $data = $request->validated();
+            return CategoryResource::collection($this->service->paginate($data))
             ->response()
             ->setStatusCode(Response::HTTP_OK);   
         } catch (\Throwable $th) {

@@ -16,9 +16,9 @@ abstract class BaseServiceAbstract implements BaseServiceInterface
         $this->repository = $repository;
     }
 
-    public function paginate(int $limit = 25)
+    public function paginate(array $query): object
     {
-        return $this->repository->paginate($limit);
+        return $this->repository->paginate($query);
     }
 
     public function all()

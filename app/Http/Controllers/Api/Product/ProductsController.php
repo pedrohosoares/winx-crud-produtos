@@ -10,6 +10,7 @@ use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 use App\Http\Resources\Product\ProductResource;
 use App\Traits\ApiResponseTraits;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class ProductsController extends Controller
@@ -27,11 +28,15 @@ class ProductsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(SearchProductRequest $request)
+    public function index(SearchProductRequest $request): JsonResponse
     {
         try {
-            return ProductResource::collection($this->service->paginate());
+            $data = $request->validated();
+            return ProductResource::collection($this->service->paginate($data))
+            ->response()
+            ->setStatusCode(Response::HTTP_OK);
         } catch (\Throwable $th) {
+            report($th);
             return $this->errorResponse('Dados indisponíveis no momento',['message'=>$th->getMessage()],Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -39,7 +44,7 @@ class ProductsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProductRequest $request)
+    public function store(StoreProductRequest $request): JsonResponse
     {
         try {
             $product = $this->service->create($request->validated());
@@ -55,7 +60,7 @@ class ProductsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ShowProductRequest $request)
+    public function show(ShowProductRequest $request): JsonResponse
     {
         try {
             $product = $this->service->get($request->id);
