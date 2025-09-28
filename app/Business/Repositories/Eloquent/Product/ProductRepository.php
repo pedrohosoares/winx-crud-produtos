@@ -58,7 +58,7 @@ class ProductRepository extends BaseRepositoryAbstract implements ProductReposit
         }
         if($query['stock'])
         {
-            $model = $model->where('products.stock',$query['stock']);   
+            $model = $model->where('products.stock','>',0);   
         }
         if($query['category_id'])
         {
