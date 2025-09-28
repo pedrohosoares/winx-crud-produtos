@@ -11,7 +11,6 @@ use App\Http\Requests\Category\UpdateCategoryRequest;
 use App\Http\Resources\Product\CategoryResource;
 use App\Traits\ApiResponseTraits;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class CategoriesController extends Controller

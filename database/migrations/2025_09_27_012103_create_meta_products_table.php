@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('product_id',false,true);
             $table->foreign('product_id')->on('products')->references('id');
-            $table->string('name');
-            $table->text('value')->nullable();
+            $table->jsonb('attributes')->default('{}');
             $table->timestamps();
         });
     }
