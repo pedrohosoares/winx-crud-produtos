@@ -82,4 +82,11 @@ class ProductRepository extends BaseRepositoryAbstract implements ProductReposit
         return $this->model->paginate($query['limit']);
     }
 
+    public function create(array $data): object
+    {
+        $product = $this->model->create($data);
+        $product->meta()->create(['attributes' => $data['meta']]);
+        return $product;
+    }
+
 }

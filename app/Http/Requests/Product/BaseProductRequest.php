@@ -37,8 +37,7 @@ abstract class BaseProductRequest extends FormRequest
             'stock.min' => 'O estoque não pode ser negativo',
             'category_id.required' => 'A categoria é obrigatória',
             'category_id.exists' => 'A categoria selecionada não existe',
-            'meta.array' => 'O campo meta deve ser um conjunto de dados',
-            'meta.*.string' => 'Os campos meta devem ser um texto com o valor em texto, ex: "size":"33"',
+            'meta.array' => 'O campo meta deve ser um conjunto de dados'
         ];
     }
 }

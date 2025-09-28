@@ -17,6 +17,7 @@ class MetaProductResource extends JsonResource
         $dataProduct = parent::toArray($request);
         return [
             ...$dataProduct,
+            'category'=>$this->category,
             'meta'=>$this->meta
         ];
     }
