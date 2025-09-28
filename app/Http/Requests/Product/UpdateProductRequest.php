@@ -11,12 +11,13 @@ class UpdateProductRequest extends BaseProductRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     protected function prepareForValidation(): void
     {
         $this->merge(['id' => $this->route('product')]);
+        $this->merge(['meta' => $this->meta ?? []]);
     }
 
     /**

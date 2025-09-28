@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests\Category;
 
-use App\Http\Requests\Product\BaseProductRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateCategoryRequest extends BaseProductRequest
+class UpdateCategoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,17 +26,23 @@ class UpdateCategoryRequest extends BaseProductRequest
      */
     public function rules(): array
     {
-        $rules = $this->baseRules();
-        $rules['id'] = 'required|exists|numeric';
-        return $rules;
+        return [
+            "id" => "required|exists:categories,id|numeric",
+            "name" => "required|string|min:3,max:80"
+        ];
     }
 
     public function messages(): array
     {
-        $message = $this->baseMessages();
-        $message['id.required'] = "O ID precisa ser válido";
-        $message['id.exists'] = "A categoria não existe";
-        $message['id.numeric'] = "O ID precisa estar em caracteres válidos";
-        return $message;
+        return [
+            "id.required" => "O ID precisa ser válido",
+            "id.exists" => "A categoria não existe",
+            "id.numeric" => "O ID precisa estar em caracteres válidos",
+            "name.required" => "O nome da categoria é obrigatório",
+            "name.string" => "O nome precisa ser uma palavra",
+            "name.unique" => "A categoria já esta cadastrada",
+            "name.min" => "Você precisa informar pelo menos 3 digitos no nome",
+            "name.max" => "Você precisa informar no máximo 80 digitos no nome"
+        ];
     }
 }

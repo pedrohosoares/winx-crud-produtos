@@ -89,4 +89,15 @@ class ProductRepository extends BaseRepositoryAbstract implements ProductReposit
         return $product;
     }
 
+    public function update(int $id, array $data): bool
+    {
+        $record = $this->find($id);
+        $id = ($record->meta) ? ['id'=>$record->meta->id] : [];
+        $record->meta()->updateOrCreate(
+            $id,
+            ['attributes'=>$data['meta']]
+        );
+        return $record ? $record->update($data) : false;
+    }
+
 }

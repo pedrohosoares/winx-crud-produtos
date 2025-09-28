@@ -16,7 +16,6 @@ class VerifyPermitTokenUserMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         $route = $request->route();
-        $method = $request->method();
         $nameRoute = $route?->getName();
         $user = $request->user();
         if($user->tokenCan($nameRoute) || $user->tokenCan('*')){
