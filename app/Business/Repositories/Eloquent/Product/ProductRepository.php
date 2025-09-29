@@ -95,4 +95,14 @@ class ProductRepository extends BaseRepositoryAbstract implements ProductReposit
         return $product ? $product->update($data) : false;
     }
 
+    public function delete(int $id): bool
+    {
+        $product = $this->find($id);
+        if($product){
+            $product->category()->detach();
+            return $product->delete();
+        }
+        return false;
+    }
+
 }

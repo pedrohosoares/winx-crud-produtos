@@ -35,4 +35,14 @@ class CategoryRepository extends BaseRepositoryAbstract implements CategoryRepos
         $model = $model->orderBy('categories.id',$query['order']);
         return $model->paginate($query['limit']);
     }
+
+    public function delete(int $id): bool
+    {
+        $category = $this->find($id);
+        if($category){
+            $category->product()->detach();
+            return $category->delete();
+        }
+        return false;
+    }
 }
