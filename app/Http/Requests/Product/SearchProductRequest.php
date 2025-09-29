@@ -5,7 +5,7 @@ namespace App\Http\Requests\Product;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 
-class SearchProductRequest extends FormRequest
+class SearchProductRequest extends BaseProductRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,6 +22,7 @@ class SearchProductRequest extends FormRequest
                 'order' => Str::upper($this->order),
             ]);
         }
+        $this->basePrepareForValidation();
     }
 
     /**
@@ -39,7 +40,14 @@ class SearchProductRequest extends FormRequest
             'price_min' => 'nullable|numeric|min:0',
             'price_max' => 'nullable|numeric|min:0|gte:price_min',
             'stock' => 'nullable|integer|min:0',
-            'category_id' => 'nullable|integer|exists:categories,id',
+            'category_id' => 'required|array|min:1',
+            'category_id.*' => 'integer|distinct|exists:categories,id',
+            'category_id.required' => 'Informe ao menos uma categoria',
+            'category_id.array' => 'As categorias devem vir em formato de lista',
+            'category_id.min' => 'Selecione pelo menos uma categoria',
+            'category_id.*.integer' => 'Cada categoria deve ser um ID válido',
+            'category_id.*.distinct' => 'Existem IDs de categoria repetidos',
+            'category_id.*.exists' => 'Uma ou mais categorias não existem ou foram removidas',
             'deleted' => 'nullable|numeric',
             'page' => 'nullable|numeric',
             'limit' => 'nullable|numeric',

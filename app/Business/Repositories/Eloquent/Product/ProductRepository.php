@@ -16,21 +16,22 @@ class ProductRepository extends BaseRepositoryAbstract implements ProductReposit
 
     public function paginate(array $query): object
     {
-        $query = FilterSupport::verifyIfEmptyValueByArray($query,'id','');
-        $query = FilterSupport::verifyIfEmptyValueByArray($query,'name','');
-        $query = FilterSupport::verifyIfEmptyValueByArray($query,'description','');
-        $query = FilterSupport::verifyIfEmptyValueByArray($query,'price','');
-        $query = FilterSupport::verifyIfEmptyValueByArray($query,'price_min','');
-        $query = FilterSupport::verifyIfEmptyValueByArray($query,'price_max','');
-        $query = FilterSupport::verifyIfEmptyValueByArray($query,'stock','');
-        $query = FilterSupport::verifyIfEmptyValueByArray($query,'category_id','');
-        $query = FilterSupport::verifyIfEmptyValueByArray($query,'deleted','');
-        $query = FilterSupport::verifyIfEmptyValueByArray($query,'deleted_start','');
-        $query = FilterSupport::verifyIfEmptyValueByArray($query,'deleted_end','');
+        $query = FilterSupport::verifyIfEmptyValueByArray($query,'id');
+        $query = FilterSupport::verifyIfEmptyValueByArray($query,'name');
+        $query = FilterSupport::verifyIfEmptyValueByArray($query,'description');
+        $query = FilterSupport::verifyIfEmptyValueByArray($query,'price');
+        $query = FilterSupport::verifyIfEmptyValueByArray($query,'price_min');
+        $query = FilterSupport::verifyIfEmptyValueByArray($query,'price_max');
+        $query = FilterSupport::verifyIfEmptyValueByArray($query,'stock');
+        $query = FilterSupport::verifyIfEmptyValueByArray($query,'category_id');
+        $query = FilterSupport::verifyIfEmptyValueByArray($query,'deleted');
+        $query = FilterSupport::verifyIfEmptyValueByArray($query,'deleted_start');
+        $query = FilterSupport::verifyIfEmptyValueByArray($query,'deleted_end');
         $query = FilterSupport::verifyIfEmptyValueByArray($query,'limit','25');
         $query = FilterSupport::verifyIfEmptyValueByArray($query,'page','1');
         $query = FilterSupport::verifyIfEmptyValueByArray($query,'order','DESC');
-        
+
+
         $model = $this->model;
         if($query['id'])
         {
@@ -46,58 +47,52 @@ class ProductRepository extends BaseRepositoryAbstract implements ProductReposit
         }
         if($query['price'])
         {
-            $model = $model->where('products.price',$query['price']);   
+            $model = $model->where('products.price',(float) $query['price']);   
         }
         if($query['price_min'])
         {
-            $model = $model->where('products.price_min','>=',$query['price_min']);   
+            $model = $model->where('products.price','>=',(float) $query['price_min']);   
         }
         if($query['price_max'])
         {
-            $model = $model->where('products.price','<=',$query['price']);   
+            $model = $model->where('products.price','<=',(float) $query['price_max']);   
         }
         if($query['stock'])
         {
             $model = $model->where('products.stock','>',0);   
         }
-        if($query['category_id'])
+        if(!empty($query['category_id'][0]))
         {
-            $model = $model->where('products.category_id',$query['category_id']);   
+            $model = $model->whereHas('category',function($q) use ($query){
+                $q->whereIn('categories.id',$query['category_id']);
+            });
         }
         if($query['deleted'])
         {
             $model = $model->whereNotNull('deleted_at');   
         }
-        if($query['deleted_start'])
-        {
-            $model = $model->whereNotNull('deleted_at');  
-            $model = $model->where('deleted_at','>=',$query['deleted_start']);   
-        }
-        if($query['deleted_end'])
-        {
-            $model = $model->whereNotNull('deleted_at');  
-            $model = $model->where('deleted_at','<=',$query['deleted_end']);   
-        }
         $model = $model->orderBy('products.id',$query['order']);
-        return $this->model->paginate($query['limit']);
+        return $model->paginate($query['limit']);
     }
 
     public function create(array $data): object
     {
         $product = $this->model->create($data);
+        $product->category()->sync($data['category_id']);
         $product->meta()->create(['attributes' => $data['meta']]);
         return $product;
     }
 
     public function update(int $id, array $data): bool
     {
-        $record = $this->find($id);
-        $id = ($record->meta) ? ['id'=>$record->meta->id] : [];
-        $record->meta()->updateOrCreate(
+        $product = $this->find($id);
+        $id = ($product->meta) ? ['id'=>$product->meta->id] : [];
+        $product->category()->sync($data['category_id']);
+        $product->meta()->updateOrCreate(
             $id,
             ['attributes'=>$data['meta']]
         );
-        return $record ? $record->update($data) : false;
+        return $product ? $product->update($data) : false;
     }
 
 }

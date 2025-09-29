@@ -21,6 +21,7 @@ class CategoryRepository extends BaseRepositoryAbstract implements CategoryRepos
         $query = FilterSupport::verifyIfEmptyValueByArray($query,'page','1');
         $query = FilterSupport::verifyIfEmptyValueByArray($query,'limit','25');
         $query = FilterSupport::verifyIfEmptyValueByArray($query,'order','DESC');
+        
         $model = $this->model;
         if($query['id'])
         {
@@ -32,6 +33,6 @@ class CategoryRepository extends BaseRepositoryAbstract implements CategoryRepos
         }
         
         $model = $model->orderBy('categories.id',$query['order']);
-        return $this->model->paginate($query['limit']);
+        return $model->paginate($query['limit']);
     }
 }

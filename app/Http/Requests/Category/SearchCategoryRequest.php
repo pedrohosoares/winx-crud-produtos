@@ -33,7 +33,7 @@ class SearchCategoryRequest extends FormRequest
     {
         return [
             'id' => "nullable|numeric|exists:categories,id",
-            'name" => "nullable|string|max:80',
+            'name' => 'nullable|string|max:80',
             'limit' => 'nullable|numeric',
             'page' => 'nullable|numeric',
             'order' => 'nullable|string|in:ASC,DESC'

@@ -6,6 +6,7 @@ use Database\Factories\ProductFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -19,7 +20,6 @@ class Product extends Model
         'description',
         'price',
         'stock',
-        'category_id'
     ];
 
     protected static function newFactory(): ProductFactory
@@ -27,9 +27,9 @@ class Product extends Model
         return ProductFactory::new();
     }
     
-    public function category(): BelongsTo
+    public function category(): BelongsToMany
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsToMany(Category::class,'category_product');
     }
 
     public function meta(): HasOne

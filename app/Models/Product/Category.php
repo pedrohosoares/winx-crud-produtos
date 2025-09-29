@@ -5,6 +5,7 @@ namespace App\Models\Product;
 use Database\Factories\CategoryFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -22,8 +23,8 @@ class Category extends Model
         return CategoryFactory::new();
     }
 
-    public function product(): HasMany
+    public function product(): BelongsToMany
     {
-        return $this->hasMany(Product::class);
+        return $this->belongsToMany(Product::class,'category_product');
     }
 }

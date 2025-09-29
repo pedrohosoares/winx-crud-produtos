@@ -14,6 +14,11 @@ class StoreProductRequest extends BaseProductRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $this->basePrepareForValidation();
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *

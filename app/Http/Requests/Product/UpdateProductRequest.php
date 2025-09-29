@@ -18,6 +18,7 @@ class UpdateProductRequest extends BaseProductRequest
     {
         $this->merge(['id' => $this->route('product')]);
         $this->merge(['meta' => $this->meta ?? []]);
+        $this->basePrepareForValidation();
     }
 
     /**

@@ -19,10 +19,10 @@ class MetaProductFactory extends Factory
     {
         return [
             'attributes' => [
-                'size'   => $this->faker->numberBetween(35, 46),
-                'color'  => $this->faker->safeColorName(),
-                'code'   => $this->faker->uuid(),
-                'brand'  => $this->faker->company(),
+                'size' => $this->faker->numberBetween(35, 46),
+                'color' => $this->faker->safeColorName(),
+                'code' => $this->faker->uuid(),
+                'brand' => $this->faker->company(),
             ],
             'product_id' => Product::factory(),
         ];
