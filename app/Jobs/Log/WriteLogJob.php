@@ -26,7 +26,7 @@ class WriteLogJob implements ShouldQueue
     public function handle(): void
     {
         $message = sprintf(
-            "[%s] %s - entity: %s, id: %s, user: %s, changes: %s",
+            "[%s] %s - tabela: %s, id: %s, usuario: %s, dados: %s",
             now()->toDateTimeString(),
             strtoupper($this->action),
             $this->table,

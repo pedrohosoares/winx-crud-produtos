@@ -4,12 +4,14 @@ namespace App\Business\Services;
 
 use App\Business\Repositories\Contracts\BaseRepositoryInterface;
 use App\Business\Services\Product\Contracts\BaseServiceInterface;
-use App\Events\StoreLogsEvent;
 use App\Support\AuthSupport;
+use App\Traits\CreateLogTrait;
 use Illuminate\Support\Facades\DB;
 
 abstract class BaseServiceAbstract implements BaseServiceInterface
 {
+
+    use CreateLogTrait;
 
     protected $repository;
     
@@ -43,13 +45,13 @@ abstract class BaseServiceAbstract implements BaseServiceInterface
     {
         return DB::transaction(function () use ($data) {
             $transaction = $this->repository->create($data);
-            event(new StoreLogsEvent(
+            $this->makeLog(
                 $this->repository->getTable(),
                 $transaction->id,
                 'created',
                 AuthSupport::authID(),
                 $data
-            ));
+            );
             return $transaction;
         });
     }
@@ -58,13 +60,13 @@ abstract class BaseServiceAbstract implements BaseServiceInterface
     {
         return DB::transaction(function() use ($id,$data){
             $transaction = $this->repository->update($id,$data);
-            event(new StoreLogsEvent(
+            $this->makeLog(
                 $this->repository->getTable(),
                 $id,
                 'updated',
                 AuthSupport::authID(),
                 $data
-            ));
+            );
             return $transaction;
         }); 
     }
@@ -73,13 +75,13 @@ abstract class BaseServiceAbstract implements BaseServiceInterface
     {
         return DB::transaction(function() use($id){
             $transaction = $this->repository->delete($id);
-            event(new StoreLogsEvent(
+            $this->makeLog(
                 $this->repository->getTable(),
                 $id,
                 'deleted',
                 AuthSupport::authID(),
                 []
-            ));
+            );
             return $transaction;
         });
     }
