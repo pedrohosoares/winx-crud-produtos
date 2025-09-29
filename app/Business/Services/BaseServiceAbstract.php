@@ -4,16 +4,24 @@ namespace App\Business\Services;
 
 use App\Business\Repositories\Contracts\BaseRepositoryInterface;
 use App\Business\Services\Product\Contracts\BaseServiceInterface;
+use App\Events\StoreLogsEvent;
+use App\Support\AuthSupport;
 use Illuminate\Support\Facades\DB;
 
 abstract class BaseServiceAbstract implements BaseServiceInterface
 {
 
     protected $repository;
+    
 
     public function __construct(BaseRepositoryInterface $repository)
     {
         $this->repository = $repository;
+    }
+
+    public function getTable(): string
+    {
+        return $this->repository->getTable();
     }
 
     public function paginate(array $query): object
@@ -34,21 +42,45 @@ abstract class BaseServiceAbstract implements BaseServiceInterface
     public function create(array $data): object
     {
         return DB::transaction(function () use ($data) {
-            return $this->repository->create($data);
+            $transaction = $this->repository->create($data);
+            event(new StoreLogsEvent(
+                $this->repository->getTable(),
+                $transaction->id,
+                'created',
+                AuthSupport::authID(),
+                $data
+            ));
+            return $transaction;
         });
     }
 
     public function update(int $id, array $data): bool
     {
         return DB::transaction(function() use ($id,$data){
-            return $this->repository->update($id,$data);
+            $transaction = $this->repository->update($id,$data);
+            event(new StoreLogsEvent(
+                $this->repository->getTable(),
+                $id,
+                'updated',
+                AuthSupport::authID(),
+                $data
+            ));
+            return $transaction;
         }); 
     }
 
     public function delete(int $id): bool
     {
         return DB::transaction(function() use($id){
-            return $this->repository->delete($id);
+            $transaction = $this->repository->delete($id);
+            event(new StoreLogsEvent(
+                $this->repository->getTable(),
+                $id,
+                'deleted',
+                AuthSupport::authID(),
+                []
+            ));
+            return $transaction;
         });
     }
 }

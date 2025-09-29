@@ -9,9 +9,9 @@ class CategoryService extends BaseServiceAbstract implements CategoryServiceInte
 {
     protected $repository;
 
-    public function __construct(CategoryRepositoryInterface $category)
+    public function __construct(CategoryRepositoryInterface $repository)
     {
-        parent::__construct($category);
+        parent::__construct($repository);
     }
 
 }

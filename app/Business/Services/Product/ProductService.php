@@ -10,4 +10,5 @@ class ProductService extends BaseServiceAbstract
     {
         parent::__construct($repository);
     }
+
 }

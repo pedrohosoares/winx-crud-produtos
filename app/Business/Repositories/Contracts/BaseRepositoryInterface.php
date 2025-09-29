@@ -5,6 +5,7 @@ use Illuminate\Support\Collection;
 
 interface BaseRepositoryInterface
 {
+    public function getTable(): string;
     public function paginate(array $query): object;
     public function all(): Collection;        
     public function find(int $id): ?object;  

@@ -58,6 +58,27 @@ return [
             'ignore_exceptions' => false,
         ],
 
+        'created' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/created.log'),
+            'level' => 'info',
+            'days' => 30,
+        ],
+    
+        'updated' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/updated.log'),
+            'level' => 'info',
+            'days' => 30,
+        ],
+    
+        'deleted' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/deleted.log'),
+            'level' => 'info',
+            'days' => 30,
+        ],
+
         'single' => [
             'driver' => 'single',
             'path' => storage_path('logs/laravel.log'),

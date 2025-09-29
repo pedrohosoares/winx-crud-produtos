@@ -3,6 +3,7 @@ namespace App\Business\Services\Product\Contracts;
 
 interface BaseServiceInterface
 {
+    public function getTable(): string;
     public function paginate(array $query): object;
     public function all();
     public function get(int $id): ?object;
